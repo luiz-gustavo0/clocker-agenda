@@ -1,65 +1,110 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import {
+  Container,
+  Box,
+  Input,
+  Button,
+  Text,
+  FormControl,
+  FormLabel,
+  InputGroup,
+  InputLeftAddon,
+  FormHelperText,
+} from '@chakra-ui/react';
+import { Logo } from './../components';
+
+const validationSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Email inválido')
+    .required('Preenchimento obrigatório'),
+  password: yup.string().required('Preenchimento obrigatório'),
+  username: yup.string().required('Preenchimento obrigatório'),
+});
 
 export default function Home() {
+  const {
+    values,
+    touched,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    errors,
+    isSubmitting,
+  } = useFormik({
+    onSubmit: (values, form) => {
+      console.log(values);
+    },
+    validationSchema,
+    initialValues: {
+      email: '',
+      username: '',
+      password: '',
+    },
+  });
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Container p={8} border='1px solid red' maxWidth='5xl' centerContent>
+      <Logo />
+      <Box py={8}>
+        <Text textAlign='center'>Crie sua agenda compartilhada</Text>
+      </Box>
+      <Box minW='lg'>
+        <FormControl id='email' isRequired>
+          <FormLabel>Email</FormLabel>
+          <Input
+            type='email'
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          {touched.email && (
+            <FormHelperText textColor='red.300'>{errors.email}</FormHelperText>
+          )}
+        </FormControl>
+        <FormControl id='password' isRequired mt={4}>
+          <FormLabel>Senha</FormLabel>
+          <Input
+            type='password'
+            value={values.password}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+          {touched.password && (
+            <FormHelperText> {errors.password}</FormHelperText>
+          )}
+        </FormControl>
+        <FormControl id='username' isRequired mt={4}>
+          <InputGroup mt={6}>
+            <InputLeftAddon children='clock.work/' />
+            <Input
+              type='text'
+              placeholder='nick'
+              value={values.username}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </InputGroup>
+          {touched.username && (
+            <FormHelperText>{errors.username}</FormHelperText>
+          )}
+        </FormControl>
+      </Box>
+      <Box>
+        <Button
+          onClick={handleSubmit}
+          colorScheme='blue'
+          size='lg'
+          w='lg'
+          mt='6'
+          fontSize='lg'
+          isLoading={isSubmitting}
         >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+          Entrar
+        </Button>
+      </Box>
+    </Container>
+  );
 }
