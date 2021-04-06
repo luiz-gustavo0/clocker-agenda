@@ -8,10 +8,13 @@ import {
   Text,
   FormControl,
   FormLabel,
+  InputGroup,
+  InputLeftAddon,
   FormHelperText,
 } from '@chakra-ui/react';
 import { Logo } from '../components';
 import Link from 'next/link';
+
 import firebase from '../config/firebase';
 
 const validationSchema = yup.object().shape({
@@ -20,6 +23,7 @@ const validationSchema = yup.object().shape({
     .email('Email inválido')
     .required('Preenchimento obrigatório'),
   password: yup.string().required('Preenchimento obrigatório'),
+  username: yup.string().required('Preenchimento obrigatório'),
 });
 
 export default function Home() {
@@ -36,7 +40,7 @@ export default function Home() {
       try {
         const user = await firebase
           .auth()
-          .signInWithEmailAndPassword(values.email, values.password);
+          .createUserWithEmailAndPassword(values.email, values.password);
       } catch (error) {
         console.log('ERROR:', error);
       }
@@ -44,6 +48,7 @@ export default function Home() {
     validationSchema,
     initialValues: {
       email: '',
+      username: '',
       password: '',
     },
   });
@@ -80,6 +85,21 @@ export default function Home() {
             <FormHelperText> {errors.password}</FormHelperText>
           )}
         </FormControl>
+        <FormControl id='username' isRequired mt={4}>
+          <InputGroup mt={6}>
+            <InputLeftAddon children='clock.work/' />
+            <Input
+              type='text'
+              placeholder='username'
+              value={values.username}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </InputGroup>
+          {touched.username && (
+            <FormHelperText>{errors.username}</FormHelperText>
+          )}
+        </FormControl>
       </Box>
       <Box>
         <Button
@@ -91,11 +111,11 @@ export default function Home() {
           fontSize='lg'
           isLoading={isSubmitting}
         >
-          Entrar
+          Cadastrar
         </Button>
       </Box>
       <Box my='8'>
-        <Link href='/signup'>Ainda não possui uma conta? Cadastre-se!</Link>
+        <Link href='/'>Já possui uma conta? Acesse!</Link>
       </Box>
     </Container>
   );
