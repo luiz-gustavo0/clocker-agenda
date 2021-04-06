@@ -15,7 +15,7 @@ import {
 import { Logo } from '../components';
 import Link from 'next/link';
 
-import { firebaseClient } from '../config/firebase';
+import { firebaseClient } from '../config/firebase/client';
 
 const validationSchema = yup.object().shape({
   email: yup
