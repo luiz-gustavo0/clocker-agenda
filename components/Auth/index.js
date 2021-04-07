@@ -1,3 +1,4 @@
+import axios from 'axios';
 import * as React from 'react';
 import {
   createContext,
@@ -14,6 +15,7 @@ export const login = async ({ email, password }) => {
   firebaseClient.auth().setPersistence(persistenceMode);
   try {
     await firebaseClient.auth().signInWithEmailAndPassword(email, password);
+    return firebaseClient.auth().currentUser;
   } catch (error) {
     console.log('LOGIN ERROR:', error);
   }
@@ -26,8 +28,19 @@ export const logout = async () => {
 export const signup = async ({ email, password, username }) => {
   try {
     await firebaseClient.auth().createUserWithEmailAndPassword(email, password);
+    const user = await login({ email, password });
 
-    await login({ email, password });
+    const token = await user.getIdToken();
+
+    const { data } = axios({
+      method: 'post',
+      url: '/api/profile',
+      data: { username },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(data);
   } catch (err) {
     console.log('SIGNUP ERROR:', err);
   }
