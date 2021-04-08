@@ -13,7 +13,8 @@ import {
   SimpleGrid,
   Spinner,
 } from '@chakra-ui/react';
-import { formatDate, Logo, useAuth } from '../components';
+
+import { formatDate, Logo, TimeBlock, useAuth } from '../components';
 
 const getSchedule = async (when) =>
   axios({
@@ -28,14 +29,6 @@ const Header = ({ children }) => (
   </Box>
 );
 
-const TimeBlock = ({ time }) => {
-  return (
-    <Button p='8' bg='blue.500' color='#fff'>
-      {time}
-    </Button>
-  );
-};
-
 export default function Schedule() {
   const router = useRouter();
   const [auth, { logout }] = useAuth();
@@ -47,10 +40,6 @@ export default function Schedule() {
 
   const addDay = () => setWhen((prevState) => addDays(prevState, 1));
   const removeDay = () => setWhen((prevState) => subDays(prevState, 1));
-
-  // useEffect(() => {
-  //   !auth.user && router.push('/');
-  // }, [auth.user]);
 
   useEffect(() => {
     fetch(when);
