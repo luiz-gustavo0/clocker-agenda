@@ -14,13 +14,15 @@ import {
 
 import { Input } from '../Input';
 import axios from 'axios';
+import { format } from 'date-fns';
 
-const setSchedule = async (data) =>
+const setSchedule = async ({ date, ...data }) =>
   axios({
     method: 'post',
     url: '/api/schedule',
     data: {
       ...data,
+      date: format(date, 'yyyy-MM-dd'),
       username: window.location.pathname.replace('/', ''),
     },
   });
@@ -54,7 +56,7 @@ const ModalTimeBlock = ({
   </Modal>
 );
 
-export const TimeBlock = ({ time }) => {
+export const TimeBlock = ({ time, date }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen((prevState) => !prevState);
 
@@ -69,7 +71,7 @@ export const TimeBlock = ({ time }) => {
   } = useFormik({
     onSubmit: async (values) => {
       try {
-        await setSchedule({ ...values, when: time });
+        await setSchedule({ ...values, time, date });
         toggle();
       } catch (err) {
         console.log(err);
