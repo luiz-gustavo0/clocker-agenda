@@ -52,7 +52,7 @@ export default function Login() {
 
   return (
     <Container p={8} border='1px solid red' maxWidth='5xl' centerContent>
-      <Logo />
+      <Logo size={300} />
       <Box py={8}>
         <Text textAlign='center'>Crie sua agenda compartilhada</Text>
       </Box>
