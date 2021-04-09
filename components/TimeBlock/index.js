@@ -25,7 +25,13 @@ const setSchedule = async (data) =>
     },
   });
 
-const ModalTimeBlock = ({ isOpen, onClose, onComplete, children }) => (
+const ModalTimeBlock = ({
+  isOpen,
+  onClose,
+  onComplete,
+  isSubmitting,
+  children,
+}) => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent>
@@ -33,10 +39,16 @@ const ModalTimeBlock = ({ isOpen, onClose, onComplete, children }) => (
       <ModalCloseButton />
       <ModalBody>{children}</ModalBody>
       <ModalFooter>
-        <Button bg='blue.500' color='#fff' mr='3' onClick={onComplete}>
+        {!isSubmitting && <Button variant='ghost'>Canelar</Button>}
+        <Button
+          bg='blue.500'
+          color='#fff'
+          mr='3'
+          onClick={onComplete}
+          isLoading={isSubmitting}
+        >
           Reservar Horário
         </Button>
-        <Button variant='ghost'>Canelar</Button>
       </ModalFooter>
     </ModalContent>
   </Modal>
@@ -53,8 +65,16 @@ export const TimeBlock = ({ time }) => {
     handleSubmit,
     handleChange,
     touched,
+    isSubmitting,
   } = useFormik({
-    onSubmit: (values) => setSchedule({ ...values, when: time }),
+    onSubmit: async (values) => {
+      try {
+        await setSchedule({ ...values, when: time });
+        toggle();
+      } catch (err) {
+        console.log(err);
+      }
+    },
     initialValues: {
       name: '',
       phone: '',
@@ -72,6 +92,7 @@ export const TimeBlock = ({ time }) => {
         isOpen={isOpen}
         onClose={toggle}
         onComplete={handleSubmit}
+        isSubmitting={isSubmitting}
       >
         <>
           <Input
@@ -84,6 +105,7 @@ export const TimeBlock = ({ time }) => {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.name}
+            disabled={isSubmitting}
             size='lg'
           />
           <Input
@@ -96,6 +118,7 @@ export const TimeBlock = ({ time }) => {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.name}
+            disabled={isSubmitting}
             size='lg'
           />
         </>
