@@ -47,16 +47,21 @@ const setSchedule = async (req, res) => {
 
 const getSchedule = async (req, res) => {
   try {
-    // const profileDoc = await profile
-    //   .where('username', '==', req.query.username)
-    //   .get();
+    const userId = await getUserId(req.query.username);
 
-    // const snapshot = await agenda
-    //   .where('userId', '==', profileDoc.userId)
-    //   .where('when', '==', req.query.when)
-    //   .get();
+    const snapshot = await agenda
+      .where('userId', '==', userId)
+      .where('date', '==', req.query.date)
+      .get();
 
-    return res.status(200).json(timeBlocks);
+    const docs = snapshot.docs.map((doc) => doc.data());
+
+    const result = timeBlocks.map((time) => ({
+      time,
+      isBlocked: !!docs.find((doc) => doc.time === time),
+    }));
+
+    return res.status(200).json(result);
   } catch (err) {
     console.log('error:', err);
     return res.status(401);

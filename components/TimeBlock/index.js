@@ -56,7 +56,7 @@ const ModalTimeBlock = ({
   </Modal>
 );
 
-export const TimeBlock = ({ time, date }) => {
+export const TimeBlock = ({ time, date, disabled }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen((prevState) => !prevState);
 
@@ -88,43 +88,51 @@ export const TimeBlock = ({ time, date }) => {
   });
 
   return (
-    <Button p='8' bg='blue.500' color='#fff' onClick={toggle}>
+    <Button
+      p='8'
+      bg='blue.500'
+      color='#fff'
+      onClick={toggle}
+      disabled={disabled}
+    >
       {time}
-      <ModalTimeBlock
-        isOpen={isOpen}
-        onClose={toggle}
-        onComplete={handleSubmit}
-        isSubmitting={isSubmitting}
-      >
-        <>
-          <Input
-            label='Nome'
-            type='text'
-            placeholder='Nome'
-            name='name'
-            touched={touched.name}
-            value={values.name}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={errors.name}
-            disabled={isSubmitting}
-            size='lg'
-          />
-          <Input
-            label='Telefone'
-            type='text'
-            placeholder='Telefone'
-            name='phone'
-            touched={touched.phone}
-            value={values.phone}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={errors.name}
-            disabled={isSubmitting}
-            size='lg'
-          />
-        </>
-      </ModalTimeBlock>
+      {!disabled && (
+        <ModalTimeBlock
+          isOpen={isOpen}
+          onClose={toggle}
+          onComplete={handleSubmit}
+          isSubmitting={isSubmitting}
+        >
+          <>
+            <Input
+              label='Nome'
+              type='text'
+              placeholder='Nome'
+              name='name'
+              touched={touched.name}
+              value={values.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.name}
+              disabled={isSubmitting}
+              size='lg'
+            />
+            <Input
+              label='Telefone'
+              type='text'
+              placeholder='Telefone'
+              name='phone'
+              touched={touched.phone}
+              value={values.phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.name}
+              disabled={isSubmitting}
+              size='lg'
+            />
+          </>
+        </ModalTimeBlock>
+      )}
     </Button>
   );
 };
