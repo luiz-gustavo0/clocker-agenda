@@ -21,7 +21,7 @@ const setSchedule = async (data) =>
     url: '/api/schedule',
     data: {
       ...data,
-      username: window.location.pathname,
+      username: window.location.pathname.replace('/', ''),
     },
   });
 
@@ -54,10 +54,10 @@ export const TimeBlock = ({ time }) => {
     handleChange,
     touched,
   } = useFormik({
-    onSubmit: (values) => setSchedule(values),
+    onSubmit: (values) => setSchedule({ ...values, when: time }),
     initialValues: {
       name: '',
-      email: '',
+      phone: '',
     },
     validationSchema: yup.object().shape({
       name: yup.string().required('Preenchimento obrigatório'),
