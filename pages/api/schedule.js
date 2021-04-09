@@ -20,6 +20,10 @@ for (let blockIndex = 0; blockIndex <= totalHours; blockIndex++) {
 const getUserId = async (username) => {
   const profileDoc = await profile.where('username', '==', username).get();
 
+  if (!profileDoc.docs.length) {
+    return false;
+  }
+
   const { userId } = profileDoc.docs[0].data();
 
   return userId;
@@ -48,6 +52,10 @@ const setSchedule = async (req, res) => {
 const getSchedule = async (req, res) => {
   try {
     const userId = await getUserId(req.query.username);
+
+    if (!userId) {
+      return res.status(404).json({ message: 'Inválid username' });
+    }
 
     const snapshot = await agenda
       .where('userId', '==', userId)
